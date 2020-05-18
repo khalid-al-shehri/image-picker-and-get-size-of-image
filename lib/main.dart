@@ -31,10 +31,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   File _image;
 
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.gallery
-    );
+  Future getImage(String source) async {
+
+    var image;
+
+    if(source == "gallery"){
+      image = await ImagePicker.pickImage(
+          source: ImageSource.gallery
+      );
+    }else if(source == "camera"){
+      image = await ImagePicker.pickImage(
+          source: ImageSource.camera
+      );
+    }
 
     // MB format
     double imageSize = (image.lengthSync() / 1024) / 1024;
@@ -62,11 +71,31 @@ class _MyHomePageState extends State<MyHomePage> {
             ? Text('No image selected.')
             : Image.file(_image),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          FloatingActionButton(
+            onPressed: (){
+              getImage("gallery");
+            },
+            heroTag: "gallery",
+            tooltip: 'Pick Image',
+            child: Icon(Icons.photo),
+          ),
+
+          SizedBox(height: 10,),
+
+          FloatingActionButton(
+            onPressed: (){
+              getImage("camera");
+            },
+            heroTag: "camera",
+            tooltip: 'Pick Image',
+            child: Icon(Icons.add_a_photo),
+          ),
+        ],
+      )
     );
   }
 }
